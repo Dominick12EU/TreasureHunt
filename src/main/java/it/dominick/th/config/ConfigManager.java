@@ -3,6 +3,7 @@ package it.dominick.th.config;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import it.dominick.th.util.ChatUtils;
 import org.jetbrains.annotations.NotNull;
@@ -367,6 +368,21 @@ public class ConfigManager {
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Error while copying the resource: " + resourceName, e);
         }
+    }
+
+    public void printHelp(Player player) {
+        String version = plugin.getDescription().getVersion();
+
+        List<String> helpLines = Arrays.asList(
+                "&r", 
+                "<gradient:#209966:#67CB70><bold>TreasureHunt</bold> &7v" + version + "</gradient>",
+                "&7By Dominick12",
+                "&r",
+                "&e/th help &8- &7Show this menu",
+                "&r"
+        );
+
+        ChatUtils.sendList(player, helpLines);
     }
 
     @NotNull
