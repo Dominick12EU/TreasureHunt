@@ -57,7 +57,6 @@ public class TreasureRepository {
                 ps.executeUpdate();
                 return true;
             } catch (SQLException ex) {
-                // Duplicate entry -> already redeemed
                 if (ex.getSQLState() != null && ex.getSQLState().startsWith("23")) {
                     return false;
                 }
