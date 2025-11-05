@@ -1,6 +1,8 @@
 package it.dominick.th;
 
 import it.dominick.th.config.ConfigManager;
+import it.dominick.th.manager.TreasureManager;
+import it.dominick.th.repository.DatabaseRepository;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,6 +12,11 @@ public final class TreasureHunt extends JavaPlugin {
     @Getter
     private ConfigManager configManager;
 
+    @Getter
+    private DatabaseRepository databaseRepository;
+    @Getter
+    private TreasureManager treasureManager;
+
     @Override
     public void onLoad() {
         instance = this;
@@ -18,10 +25,28 @@ public final class TreasureHunt extends JavaPlugin {
     @Override
     public void onEnable() {
         this.configManager = new ConfigManager(this);
+
+        try {
+            this.databaseRepository = new DatabaseRepository();
+            this.treasureManager = new TreasureManager(this, databaseRepository);
+
+            this.treasureManager.init();
+        } catch (Exception ex) {
+            getLogger().severe("Failed to initialize database or treasure manager: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     @Override
     public void onDisable() {
+        if (treasureManager != null) {
+            treasureManager.close();
+        }
+
+        if (databaseRepository != null) {
+            databaseRepository.close();
+        }
+
         if (configManager != null) {
             configManager.clearValueCache();
         }
