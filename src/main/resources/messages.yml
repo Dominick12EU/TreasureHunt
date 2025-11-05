@@ -1,0 +1,5 @@
+global:
+  prefix: "&r<gradient:#209966:#67CB70>[TH] &8&l»"
+  wrong-command-syntax: "{prefix} &cIncorrect command syntax, Use %command%"
+  insufficient-permission: "{prefix} &cYou don't have the right permissions"
+  no-console: "{prefix} &cOnly players can execute this command"
