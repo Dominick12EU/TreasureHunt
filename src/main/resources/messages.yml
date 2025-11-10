@@ -8,11 +8,16 @@ createCmd:
   title: "&6&lTreasure Placement"
   subtitle: "&eRight click the block to assign the treasure"
   info-message: "&eYou have %seconds% seconds to click the desired block to assign the treasure"
-  timeout: "&cTreasure placement timed out"
-  success: "&aTreasure '%id%' saved at %x% %y% %z% in world %world%"
-  error: "&cFailed to save treasure to database"
+  timeout: "{prefix} &cTreasure placement timed out"
+  success: "{prefix} &aTreasure '%id%' saved at %x% %y% %z% in world %world%"
+  error: "{prefix} &cFailed to save treasure to database"
 
 listCmd:
   list-header: "{prefix} &aFound &e%count% &atreasures:"
   list-item: "&7- &e%id% &8| &7%world% &e%pos% &8| &7cmd: &e%cmd%"
   no-treasures: "{prefix} &eNo treasures found."
+
+deleteCmd:
+  deleted: "{prefix} &aTreasure %id% deleted."
+  delete-error: "{prefix} &cFailed to delete treasure %id%."
+  not-found: "{prefix} &cTreasure not found."
