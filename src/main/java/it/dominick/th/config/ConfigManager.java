@@ -111,7 +111,6 @@ public class ConfigManager {
         }
     }
 
-    @Nullable
     public String getString(@NotNull String key) {
         return getString(ConfigFile.MESSAGES, key, true);
     }

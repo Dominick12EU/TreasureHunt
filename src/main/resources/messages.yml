@@ -3,3 +3,11 @@ global:
   wrong-command-syntax: "{prefix} &cIncorrect command syntax, Use %command%"
   insufficient-permission: "{prefix} &cYou don't have the right permissions"
   no-console: "{prefix} &cOnly players can execute this command"
+
+createCmd:
+  title: "&6&lTreasure Placement"
+  subtitle: "&eRight click the block to assign the treasure"
+  info-message: "&eYou have %seconds% seconds to click the desired block to assign the treasure"
+  timeout: "&cTreasure placement timed out"
+  success: "&aTreasure '%id%' saved at %x% %y% %z% in world %world%"
+  error: "&cFailed to save treasure to database"
