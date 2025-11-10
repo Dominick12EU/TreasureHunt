@@ -1,15 +1,17 @@
 package it.dominick.th.config;
 
+import it.dominick.th.util.ChatUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import it.dominick.th.util.ChatUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -373,7 +375,7 @@ public class ConfigManager {
         String version = plugin.getDescription().getVersion();
 
         List<String> helpLines = Arrays.asList(
-                "&r", 
+                "&r",
                 "<gradient:#209966:#67CB70><bold>TreasureHunt</bold> &7v" + version + "</gradient>",
                 "&7By Dominick12",
                 "&r",

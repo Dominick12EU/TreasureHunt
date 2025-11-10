@@ -1,9 +1,9 @@
 package it.dominick.th.command.args;
 
+import it.dominick.th.TreasureHunt;
 import it.dominick.th.config.ConfigManager;
 import it.dominick.th.manager.TreasureManager;
 import it.dominick.th.model.TreasureRecord;
-import it.dominick.th.TreasureHunt;
 import it.dominick.th.util.ChatUtils;
 import org.bukkit.entity.Player;
 
