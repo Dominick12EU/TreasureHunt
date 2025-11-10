@@ -1,8 +1,9 @@
 package it.dominick.th.manager;
 
+import it.dominick.th.TreasureHunt;
 import it.dominick.th.repository.DatabaseRepository;
 import it.dominick.th.repository.TreasureRepository;
-import org.bukkit.plugin.java.JavaPlugin;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,14 +12,17 @@ import java.util.logging.Level;
 
 public class TreasureManager {
 
-    private final JavaPlugin plugin;
+    private final TreasureHunt plugin;
     private final DatabaseRepository dbRepo;
     private final TreasureRepository treasureRepo;
+    @Getter
+    private final TreasurePlacementManager placementManager;
 
-    public TreasureManager(JavaPlugin plugin, DatabaseRepository dbRepo) {
+    public TreasureManager(TreasureHunt plugin, DatabaseRepository dbRepo) {
         this.plugin = plugin;
         this.dbRepo = dbRepo;
         this.treasureRepo = new TreasureRepository(dbRepo);
+        this.placementManager = new TreasurePlacementManager(plugin, treasureRepo);
     }
 
     public CompletableFuture<Void> init() {
