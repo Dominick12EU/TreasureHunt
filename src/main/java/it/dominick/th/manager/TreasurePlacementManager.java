@@ -76,6 +76,7 @@ public class TreasurePlacementManager implements Listener {
 
         treasureRepo.insertTreasure(p.id, world, x, y, z, p.command).thenAccept(success -> {
             if (success) {
+                plugin.getTreasureManager().refreshCache();
                 ChatUtils.send(player, config.getString("createCmd.success"), "%id%", p.id, "%x%", String.valueOf(x), "%y%", String.valueOf(y), "%z%", String.valueOf(z), "%world%", world);
             } else {
                 ChatUtils.send(player, config.getString("createCmd.error"));

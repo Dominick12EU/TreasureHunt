@@ -75,6 +75,15 @@ public class TreasureManager {
         return treasureRepo.getRedeemedForPlayer(player);
     }
 
+    public CompletableFuture<Integer> deleteTreasure(String treasureId) {
+        return treasureRepo.deleteTreasure(treasureId).thenApply(affected -> {
+            if (affected > 0) {
+                treasureCache.remove(treasureId);
+            }
+            return affected;
+        });
+    }
+
     public void close() {
         try {
             dbRepo.close();

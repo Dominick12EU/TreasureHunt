@@ -179,6 +179,49 @@ public class TreasureRepository {
         });
     }
 
+    public CompletableFuture<Integer> deleteTreasure(String treasureId) {
+        String deleteTreasureSql = String.format("""
+                DELETE FROM `%s` WHERE treasure_id = ?
+                """, treasuresTable);
+
+        String deleteRedeemedSql = String.format("""
+                DELETE FROM `%s` WHERE treasure_id = ?
+                """, redeemedTable);
+
+        return db.supplyAsync(() -> {
+            try (Connection conn = db.getDataSource().getConnection()) {
+                conn.setAutoCommit(false);
+                try (PreparedStatement ps1 = conn.prepareStatement(deleteRedeemedSql);
+                     PreparedStatement ps2 = conn.prepareStatement(deleteTreasureSql)) {
+                    ps1.setString(1, treasureId);
+                    ps1.executeUpdate();
+
+                    ps2.setString(1, treasureId);
+                    int affected = ps2.executeUpdate();
+
+                    conn.commit();
+                    return affected;
+                } catch (SQLException ex) {
+                    try {
+                        conn.rollback();
+                    } catch (SQLException e) {
+                        plugin.getLogger().log(Level.WARNING, "Failed to rollback deleteTreasure transaction", e);
+                    }
+                    plugin.getLogger().log(Level.SEVERE, "Failed to delete treasure: " + treasureId, ex);
+                    return -1;
+                } finally {
+                    try {
+                        conn.setAutoCommit(true);
+                    } catch (SQLException ignored) {
+                    }
+                }
+            } catch (SQLException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to delete treasure (connection): " + treasureId, ex);
+                return -1;
+            }
+        });
+    }
+
     public CompletableFuture<List<TreasureRecord>> getAllTreasures() {
         String sql = String.format("""
                 SELECT treasure_id, world, x, y, z, command FROM `%s`
