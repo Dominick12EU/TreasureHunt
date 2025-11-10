@@ -5,11 +5,10 @@ import it.dominick.th.model.TreasureRecord;
 import it.dominick.th.repository.DatabaseRepository;
 import it.dominick.th.repository.TreasureRepository;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -82,6 +81,23 @@ public class TreasureManager {
                 treasureCache.remove(treasureId);
             }
             return affected;
+        });
+    }
+
+    public CompletableFuture<List<String>> getPlayersWhoRedeemed(String treasureId) {
+        return treasureRepo.getPlayersRedeemed(treasureId).thenApply(list -> {
+            List<String> out = new ArrayList<>();
+            for (String s : list) {
+                try {
+                    UUID uuid = UUID.fromString(s);
+                    OfflinePlayer off = Bukkit.getOfflinePlayer(uuid);
+                    String name = off.getName();
+                    out.add(name != null ? name : uuid.toString());
+                } catch (IllegalArgumentException ex) {
+                    out.add(s);
+                }
+            }
+            return out;
         });
     }
 

@@ -248,4 +248,26 @@ public class TreasureRepository {
         });
     }
 
+    public CompletableFuture<List<String>> getPlayersRedeemed(String treasureId) {
+        String sql = String.format("""
+                SELECT player_uuid FROM `%s` WHERE treasure_id = ?
+                """, redeemedTable);
+
+        return db.supplyAsync(() -> {
+            List<String> list = new ArrayList<>();
+            try (Connection conn = db.getDataSource().getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, treasureId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        list.add(rs.getString(1));
+                    }
+                }
+            } catch (SQLException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to list players redeemed for treasure: " + treasureId, ex);
+            }
+            return list;
+        });
+    }
+
 }
