@@ -1,5 +1,5 @@
 global:
-  prefix: "&r<gradient:#209966:#67CB70>[TH] &8&l»"
+  prefix: "&r<gradient:#209966:#67CB70>[TH] &8&l»&r"
   wrong-command-syntax: "{prefix} &cIncorrect command syntax, Use %command%"
   insufficient-permission: "{prefix} &cYou don't have the right permissions"
   no-console: "{prefix} &cOnly players can execute this command"
@@ -11,3 +11,8 @@ createCmd:
   timeout: "&cTreasure placement timed out"
   success: "&aTreasure '%id%' saved at %x% %y% %z% in world %world%"
   error: "&cFailed to save treasure to database"
+
+listCmd:
+  list-header: "{prefix} &aFound &e%count% &atreasures:"
+  list-item: "&7- &e%id% &8| &7%world% &e%pos% &8| &7cmd: &e%cmd%"
+  no-treasures: "{prefix} &eNo treasures found."

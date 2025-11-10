@@ -6,6 +6,7 @@ import it.dominick.th.TreasureHunt;
 import it.dominick.th.command.args.Argument;
 import it.dominick.th.command.args.HelpArgument;
 import it.dominick.th.command.args.CreateArgument;
+import it.dominick.th.command.args.ListArgument;
 import it.dominick.th.config.ConfigManager;
 import it.dominick.th.util.ChatUtils;
 import org.bukkit.command.CommandSender;
@@ -30,6 +31,7 @@ public abstract class CmdTreasureHunt implements BasicCommand {
         this.helpArgument = new HelpArgument(config);
         registerArgument("help", helpArgument);
         registerArgument("create", new CreateArgument(config));
+        registerArgument("list", new ListArgument(config));
     }
 
     protected void registerArgument(String name, Argument argument) {
