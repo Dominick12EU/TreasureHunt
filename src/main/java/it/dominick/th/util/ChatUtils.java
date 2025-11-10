@@ -39,16 +39,15 @@ public class ChatUtils {
 
     public static Component parse(@NotNull String message, @NotNull String... placeholders) {
         String converted = convertLegacyToMiniMessage(message);
-        TagResolver resolver = createPlaceholderResolver(placeholders);
 
-        return MINI_MESSAGE.deserialize(converted, resolver);
+        PlaceholderReplacementResult result = buildResolverAndReplace(placeholders, converted);
+        return MINI_MESSAGE.deserialize(result.converted, result.resolver);
     }
 
     public static Component parse(@NotNull String message, @NotNull Map<String, String> placeholders) {
         String converted = convertLegacyToMiniMessage(message);
-        TagResolver resolver = createPlaceholderResolver(placeholders);
-
-        return MINI_MESSAGE.deserialize(converted, resolver);
+        PlaceholderReplacementResult result = buildResolverAndReplace(placeholders, converted);
+        return MINI_MESSAGE.deserialize(result.converted, result.resolver);
     }
 
     public static String toLegacy(@NotNull Component component) {
@@ -77,31 +76,55 @@ public class ChatUtils {
         return result;
     }
 
-    private static TagResolver createPlaceholderResolver(@NotNull String... placeholders) {
+    private static PlaceholderReplacementResult buildResolverAndReplace(@NotNull String[] placeholders, @NotNull String converted) {
         if (placeholders.length == 0 || placeholders.length % 2 != 0) {
-            return TagResolver.empty();
+            return new PlaceholderReplacementResult(converted, TagResolver.empty());
         }
 
         TagResolver.Builder builder = TagResolver.builder();
+        String working = converted;
         for (int i = 0; i < placeholders.length; i += 2) {
-            String key = placeholders[i].replace("{", "").replace("}", "");
+            String rawKey = placeholders[i];
             String value = placeholders[i + 1];
-            builder.resolver(Placeholder.parsed(key, value));
+            String tagName = rawKey.replaceAll("[^A-Za-z0-9_-]", "").toLowerCase();
+            if (tagName.isEmpty()) {
+                tagName = "ph" + i;
+            }
+            working = working.replace(rawKey, "<" + tagName + ">");
+            builder.resolver(Placeholder.parsed(tagName, value));
         }
-        return builder.build();
+
+        return new PlaceholderReplacementResult(working, builder.build());
+    }
+
+    private static PlaceholderReplacementResult buildResolverAndReplace(@NotNull Map<String, String> placeholders, @NotNull String converted) {
+        if (placeholders.isEmpty()) {
+            return new PlaceholderReplacementResult(converted, TagResolver.empty());
+        }
+
+        TagResolver.Builder builder = TagResolver.builder();
+        String working = converted;
+        int counter = 0;
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            String rawKey = entry.getKey();
+            String value = entry.getValue();
+            String tagName = rawKey.replaceAll("[^A-Za-z0-9_-]", "").toLowerCase();
+            if (tagName.isEmpty()) {
+                tagName = "ph" + (counter++);
+            }
+            working = working.replace(rawKey, "<" + tagName + ">");
+            builder.resolver(Placeholder.parsed(tagName, value));
+        }
+
+        return new PlaceholderReplacementResult(working, builder.build());
+    }
+
+    private static TagResolver createPlaceholderResolver(@NotNull String... placeholders) {
+        return TagResolver.empty();
     }
 
     private static TagResolver createPlaceholderResolver(@NotNull Map<String, String> placeholders) {
-        if (placeholders.isEmpty()) {
-            return TagResolver.empty();
-        }
-
-        TagResolver.Builder builder = TagResolver.builder();
-        placeholders.forEach((key, value) -> {
-            String cleanKey = key.replace("{", "").replace("}", "");
-            builder.resolver(Placeholder.parsed(cleanKey, value));
-        });
-        return builder.build();
+        return TagResolver.empty();
     }
 
     private static String convertLegacyToMiniMessage(@NotNull String message) {
@@ -158,5 +181,15 @@ public class ChatUtils {
     public static String stripColors(@NotNull String message) {
         Component component = parse(message);
         return MINI_MESSAGE.stripTags(message);
+    }
+
+    private static final class PlaceholderReplacementResult {
+        final String converted;
+        final TagResolver resolver;
+
+        private PlaceholderReplacementResult(String converted, TagResolver resolver) {
+            this.converted = converted;
+            this.resolver = resolver;
+        }
     }
 }
