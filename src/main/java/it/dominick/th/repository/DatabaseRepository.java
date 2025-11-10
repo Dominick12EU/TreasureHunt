@@ -31,7 +31,7 @@ public class DatabaseRepository {
         String database = config.getString(ConfigFile.CONFIG, "database.name");
         String user = config.getString(ConfigFile.CONFIG, "database.user");
         String pass = config.getString(ConfigFile.CONFIG, "database.password");
-        boolean useSsl = config.getString(ConfigFile.CONFIG, "database.useSSL").equalsIgnoreCase("true");
+        boolean useSsl = config.getBoolean(ConfigFile.CONFIG, "database.useSSL");
         int poolSize = config.getIntOrDefault(ConfigFile.CONFIG, "database.maximumPoolSize", 4);
 
         String jdbcUrl = String.format("jdbc:mysql://%s:%d/%s?useSSL=%s&serverTimezone=UTC", host, port, database, useSsl);
