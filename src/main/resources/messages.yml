@@ -21,3 +21,8 @@ deleteCmd:
   deleted: "{prefix} &aTreasure %id% deleted."
   delete-error: "{prefix} &cFailed to delete treasure %id%."
   not-found: "{prefix} &cTreasure not found."
+
+claimTreasure:
+  already-claimed: "{prefix} &eYou have already claimed this treasure."
+  claim-failed: "{prefix} &cFailed to register your claim. Please try again later."
+  claim-success: "{prefix} &aYou claimed treasure %id%."

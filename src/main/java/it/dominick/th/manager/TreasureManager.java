@@ -29,6 +29,7 @@ public class TreasureManager {
         this.dbRepo = dbRepo;
         this.treasureRepo = new TreasureRepository(dbRepo);
         this.placementManager = new TreasurePlacementManager(plugin, treasureRepo);
+        new TreasureClaimManager(plugin, this, this.placementManager);
     }
 
     public CompletableFuture<Void> init() {

@@ -60,6 +60,10 @@ public class TreasurePlacementManager implements Listener {
         }, TimeUnit.SECONDS.toSeconds(timeoutSeconds) * 20);
     }
 
+    public boolean isPlayerPending(java.util.UUID uuid) {
+        return pending.containsKey(uuid);
+    }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
