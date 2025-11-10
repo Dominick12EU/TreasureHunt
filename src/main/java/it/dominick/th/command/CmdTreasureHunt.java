@@ -47,7 +47,11 @@ public abstract class CmdTreasureHunt implements BasicCommand {
         }
 
         if (args.length == 0) {
-            config.printHelp(player);
+            if (helpArgument.hasPermission(player)) {
+                config.printHelp(player);
+            } else {
+                ChatUtils.send(player, config.getString("global.insufficient-permission"));
+            }
             return;
         }
 
