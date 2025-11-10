@@ -378,6 +378,8 @@ public class ConfigManager {
                 "&7By Dominick12",
                 "&r",
                 "&e/th help &8- &7Show this menu",
+                "&e/th create <id> <command> &8- &7Create a treasure",
+                "&e/th list &8- &7Show the list of all treasures",
                 "&r"
         );
 
