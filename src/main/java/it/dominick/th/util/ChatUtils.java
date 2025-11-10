@@ -178,9 +178,14 @@ public class ChatUtils {
         return "<click:" + action + ":'" + value + "'>" + text + "</click>";
     }
 
+    public static Component colorize(@NotNull String message) {
+        return parse(message);
+    }
+
+
     public static String stripColors(@NotNull String message) {
-        Component component = parse(message);
-        return MINI_MESSAGE.stripTags(message);
+        String converted = convertLegacyToMiniMessage(message);
+        return MINI_MESSAGE.stripTags(converted);
     }
 
     private static final class PlaceholderReplacementResult {
