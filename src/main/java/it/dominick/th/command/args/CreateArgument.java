@@ -14,11 +14,6 @@ public class CreateArgument extends Argument {
 
     @Override
     public void execute(Player player, String[] args) {
-        if (args.length < 3) {
-            ChatUtils.send(player, config.getString("global.wrong-command-syntax"), "%command%", command());
-            return;
-        }
-
         String id = args[1];
         StringBuilder sb = new StringBuilder();
         for (int i = 2; i < args.length; i++) {

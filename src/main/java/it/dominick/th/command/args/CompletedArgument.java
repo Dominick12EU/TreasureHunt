@@ -14,11 +14,6 @@ public class CompletedArgument extends Argument {
 
     @Override
     public void execute(Player player, String[] args) {
-        if (args.length < 2) {
-            ChatUtils.send(player, config.getString("global.wrong-command-syntax"), "%command%", command());
-            return;
-        }
-
         String id = args[1];
         TreasureManager manager = TreasureHunt.getInstance().getTreasureManager();
 

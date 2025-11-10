@@ -14,11 +14,6 @@ public class DeleteArgument extends Argument {
 
     @Override
     public void execute(Player player, String[] args) {
-        if (args.length < 2) {
-            ChatUtils.send(player, config.getString("global.wrong-command-syntax"), "%command%", command());
-            return;
-        }
-
         String id = args[1];
         TreasureHunt plugin = TreasureHunt.getInstance();
         TreasureManager manager = plugin.getTreasureManager();
