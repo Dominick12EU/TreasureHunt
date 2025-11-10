@@ -7,3 +7,4 @@ database:
   useSSL: false
   maximumPoolSize: 4
 
+creationTimeout: 30

@@ -24,7 +24,7 @@ public class CreateArgument extends Argument {
         TreasureHunt plugin = TreasureHunt.getInstance();
         TreasurePlacementManager manager = plugin.getTreasureManager().getPlacementManager();
 
-        manager.waitForPlacement(player, id, cmd, 30);
+        manager.waitForPlacement(player, id, cmd, config.getInt("creationTimeout"));
     }
 
     @Override
