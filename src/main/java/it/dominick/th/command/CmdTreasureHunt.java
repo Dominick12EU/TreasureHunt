@@ -1,74 +1,101 @@
 package it.dominick.th.command;
 
-import com.google.common.collect.ImmutableList;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import it.dominick.th.TreasureHunt;
-import it.dominick.th.command.args.*;
+import it.dominick.th.command.args.Argument;
+import it.dominick.th.command.args.HelpArgument;
 import it.dominick.th.config.ConfigManager;
 import it.dominick.th.util.ChatUtils;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class CmdTreasureHunt implements TabExecutor {
+public abstract class CmdTreasureHunt implements BasicCommand {
 
-    private final ConfigManager config;
+    protected final TreasureHunt plugin;
+    protected final ConfigManager config;
+
+    @lombok.Getter(lombok.AccessLevel.PROTECTED)
     private final Argument helpArgument;
-    private final Map<String, Argument> argumentMap;
+    @lombok.Getter(lombok.AccessLevel.PROTECTED)
+    private final Map<String, Argument> argumentMap = new HashMap<>();
 
-    public CmdTreasureHunt() {
-        config = TreasureHunt.getInstance().getConfigManager();
-        argumentMap = new HashMap<>();
+    public CmdTreasureHunt(TreasureHunt plugin) {
+        this.plugin = plugin;
+        this.config = plugin.getConfigManager();
 
-        helpArgument = new HelpArgument(config);
+        this.helpArgument = new HelpArgument(config);
+        registerArgument("help", helpArgument);
+    }
+
+    protected void registerArgument(String name, Argument argument) {
+        argumentMap.put(name.toLowerCase(Locale.ROOT), argument);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSourceStack source, String[] args) {
+        CommandSender sender = source.getSender();
+
         if (!(sender instanceof Player player)) {
             ChatUtils.send(sender, config.getString("global.no-console"));
-            return true;
-        }
-        if (args.length == 0) {
-            config.printHelp(player);
-            return true;
+            return;
         }
 
-        Argument argument = getArgument(args[0].toLowerCase());
+        if (args.length == 0) {
+            config.printHelp(player);
+            return;
+        }
+
+        Argument argument = argumentMap.getOrDefault(args[0].toLowerCase(Locale.ROOT), helpArgument);
 
         if (!argument.hasPermission(player)) {
             ChatUtils.send(player, config.getString("global.insufficient-permission"));
-            return true;
+            return;
         }
 
         if (argument.invalidArgs(args)) {
-            ChatUtils.send(player, config.getString("global.wrong-command-syntax"), "%command%", argument.command());
-            return true;
+            ChatUtils.send(
+                    player,
+                    config.getString("global.wrong-command-syntax"),
+                    "%command%",
+                    argument.command()
+            );
+            return;
         }
 
         argument.execute(player, args);
-        return true;
-    }
-
-    private Argument getArgument(String name) {
-        return argumentMap.getOrDefault(name, helpArgument);
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if(!(sender instanceof Player player) || args.length == 0) return ImmutableList.of();
+    public Collection<String> suggest(CommandSourceStack source, String[] args) {
+        CommandSender sender = source.getSender();
+
+        if (!(sender instanceof Player player)) {
+            return Collections.emptyList();
+        }
+
+        if (args.length == 0) {
+            return Collections.emptyList();
+        }
 
         if (args.length == 1) {
-            return argumentMap.keySet().parallelStream().filter(arg -> arg.startsWith(args[0])).toList();
-        } else {
-            Argument argument = argumentMap.get(args[0]);
-            if(argument == null) return argumentMap.keySet().parallelStream().filter(arg -> arg.startsWith(args[0])).toList();
-            return argument.completation(player, args);
+            String input = args[0].toLowerCase(Locale.ROOT);
+            return argumentMap.keySet()
+                    .stream()
+                    .filter(name -> name.startsWith(input))
+                    .toList();
         }
+
+        Argument argument = argumentMap.get(args[0].toLowerCase(Locale.ROOT));
+        if (argument == null) {
+            return argumentMap.keySet()
+                    .stream()
+                    .filter(name -> name.startsWith(args[0].toLowerCase(Locale.ROOT)))
+                    .toList();
+        }
+
+        return argument.completation(player, args);
     }
 }
-
