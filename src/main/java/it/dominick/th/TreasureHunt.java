@@ -1,10 +1,15 @@
 package it.dominick.th;
 
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import it.dominick.th.command.TreasureHuntCommand;
 import it.dominick.th.config.ConfigManager;
 import it.dominick.th.manager.TreasureManager;
 import it.dominick.th.repository.DatabaseRepository;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public final class TreasureHunt extends JavaPlugin {
     @Getter
@@ -31,6 +36,22 @@ public final class TreasureHunt extends JavaPlugin {
             this.treasureManager = new TreasureManager(this, databaseRepository);
 
             this.treasureManager.init();
+
+            TreasureHuntCommand cmd = new TreasureHuntCommand(this);
+
+            this.getLifecycleManager().registerEventHandler(
+                    LifecycleEvents.COMMANDS,
+                    event -> {
+                        Commands registrar = event.registrar();
+
+                        registrar.register(
+                                "th",
+                                "Main command for TreasureHunt",
+                                List.of("treasurehunt"),
+                                cmd
+                        );
+                    }
+            );
         } catch (Exception ex) {
             getLogger().severe("Failed to initialize database or treasure manager: " + ex.getMessage());
             ex.printStackTrace();
