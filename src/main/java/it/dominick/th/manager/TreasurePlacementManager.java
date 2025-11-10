@@ -4,6 +4,7 @@ import it.dominick.th.TreasureHunt;
 import it.dominick.th.config.ConfigManager;
 import it.dominick.th.repository.TreasureRepository;
 import it.dominick.th.util.ChatUtils;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -11,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +35,20 @@ public class TreasurePlacementManager implements Listener {
         PendingPlacement placement = new PendingPlacement(id, command);
         pending.put(player.getUniqueId(), placement);
 
-        player.sendTitle(config.getString("createCmd.title"),
-                config.getString("createCmd.subtitle"), 10, 20 * 5, 10);
+        Title.Times times = Title.Times.times(
+                Duration.ofMillis(10 * 50L),
+                Duration.ofMillis(20 * 5 * 50L),
+                Duration.ofMillis(10 * 50L)
+        );
+
+        Title title = Title.title(
+                ChatUtils.colorize(config.getString("createCmd.title")),
+                ChatUtils.colorize(config.getString("createCmd.subtitle")),
+                times
+        );
+
+        player.showTitle(title);
+
         ChatUtils.send(player, config.getString("createCmd.info-message"),
                 "%seconds%", String.valueOf(timeoutSeconds));
 
@@ -66,6 +80,8 @@ public class TreasurePlacementManager implements Listener {
             } else {
                 ChatUtils.send(player, config.getString("createCmd.error"));
             }
+
+            player.resetTitle();
         });
 
         pending.remove(player.getUniqueId());
