@@ -1,6 +1,7 @@
 package it.dominick.th.repository;
 
 import it.dominick.th.TreasureHunt;
+import it.dominick.th.model.TreasureRecord;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -175,6 +176,32 @@ public class TreasureRepository {
                 plugin.getLogger().log(Level.SEVERE, "Failed to insert/update treasure record", ex);
                 return false;
             }
+        });
+    }
+
+    public CompletableFuture<List<TreasureRecord>> getAllTreasures() {
+        String sql = String.format("""
+                SELECT treasure_id, world, x, y, z, command FROM `%s`
+                """, treasuresTable);
+
+        return db.supplyAsync(() -> {
+            List<TreasureRecord> list = new ArrayList<>();
+            try (Connection conn = db.getDataSource().getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String id = rs.getString(1);
+                    String world = rs.getString(2);
+                    int x = rs.getInt(3);
+                    int y = rs.getInt(4);
+                    int z = rs.getInt(5);
+                    String command = rs.getString(6);
+                    list.add(new TreasureRecord(id, world, x, y, z, command));
+                }
+            } catch (SQLException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to list treasures", ex);
+            }
+            return list;
         });
     }
 
