@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class CreateArgument extends Argument {
 
     public CreateArgument(ConfigManager config) {
-        super(config, "/th create <id> <command>", "treasurehunt.admin");
+        super(config, "/th create <id> <cmd>", "treasurehunt.admin");
     }
 
     @Override
