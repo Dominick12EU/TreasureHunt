@@ -26,3 +26,8 @@ claimTreasure:
   already-claimed: "{prefix} &eYou have already claimed this treasure."
   claim-failed: "{prefix} &cFailed to register your claim. Please try again later."
   claim-success: "{prefix} &aYou claimed treasure %id%."
+
+completedCmd:
+  header: "{prefix} &aPlayers who completed %id%:"
+  empty: "{prefix} &eNo players have completed %id%."
+  item: "&7- &e%player%"

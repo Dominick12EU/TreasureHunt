@@ -8,6 +8,7 @@ import it.dominick.th.command.args.HelpArgument;
 import it.dominick.th.command.args.CreateArgument;
 import it.dominick.th.command.args.ListArgument;
 import it.dominick.th.command.args.DeleteArgument;
+import it.dominick.th.command.args.CompletedArgument;
 import it.dominick.th.config.ConfigManager;
 import it.dominick.th.util.ChatUtils;
 import org.bukkit.command.CommandSender;
@@ -34,6 +35,7 @@ public abstract class CmdTreasureHunt implements BasicCommand {
         registerArgument("create", new CreateArgument(config));
         registerArgument("list", new ListArgument(config));
         registerArgument("delete", new DeleteArgument(config));
+        registerArgument("completed", new CompletedArgument(config));
     }
 
     protected void registerArgument(String name, Argument argument) {
